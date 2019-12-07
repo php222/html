@@ -1,0 +1,160 @@
+## 在linux上安装Git
+
+1、`$ git`	根目录下输入git，查看是否安装Git
+2、`$ sudo apt-get install git`	Ubuntu linux下直接安装Git
+3、安装完成后设置名与邮箱email
+`$ git config --global user.name "[yourname]"`  设置个人用户名
+`$ git config --global user.email "[email@xxx.com]"`     设置邮箱
+`--global`参数表示本机上所有的Git仓库都会默认使用这个配置
+
+## 创建版本库
+
+1、**创建库**
+		`$ mkdir [learngit库名]`	创建库名
+		`$ cd [learngit库名]`	进入库
+		`$ pwd`		显示当前目录
+2、**设置这个目录成Git可以管理的仓库**
+		`$ git init`
+3、**编写文件（readme.txt）**
+		`$ vim [readme.txt]`
+4、**把文件添加到仓库**
+		`$ git add [readme.txt]`
+5、**提交文件到仓库**
+		`$ git commit  -m "[readme]"`
+6、**`$ git status`	显示文件当前状态**
+7、**`cat [readme.txt]`	查看文件内容**
+8、**查看文件做作的修改**
+		a、`$ git diff`	 查看尚未暂存的文件更新了哪些部分，不加参数直接输入,
+			此命令比较的是工作目录(Working tree)和暂存区域快照(index)之间的差异
+			也就是修改之后还没有暂存起来的变化内容。
+		b、查看已经暂存起来的文件(staged)和上次提交时的快照之间(HEAD)的差异
+			`$ git diff --cached`
+			`$ git diff --staged`
+				显示的是下一次commit时会提交到HEAD的内容(不带-a情况下)
+		c、显示工作版本(Working tree)和HEAD的差别
+			`$ git diff HEAD`
+		d、直接将两个分支上最新的提交做diff
+			`$ git diff topic master` 或 `$ git diff topic..master`
+		e、输出自topic和master分别开发以来，master分支上的changed。
+			`$ git diff topic...master`
+		f、查看简单的diff结果，可以加上--stat参数
+			`$ git diff --stat`
+		g、查看当前目录和另外一个分支的差别
+			`$ git diff test`	显示当前目录和另一个叫'test'分支的差别
+			`$ git diff HEAD -- ./lib` 显示当前目录下的lib目录和上次提交之间的差别（在当前分支下）
+		h、比较上次提交commit和上上次提交
+			`$ git diff HEAD^ HEAD`
+		i、比较两个历史版本之间的差异
+			`$ git diff SHA1 SHA2`
+9、**查看修改提交历史**
+	    `$ git log`	显示文件之前所作的几次修改情况
+		`$ git log --oneline`	查看修改提交历史记录的简洁版本
+		`$ git log --graph`		查看历史中出现的分支/合并情况
+		`$ git log --reverse --oneline`		逆向显示所有日志
+		`$ git log --pretty=oneline --abbrev-commit`	显示完整的commit id
+		`$ git log --author=Linus --oneline -5`		查找用户linux制定提交的5条日志
+		`$ git log --oneline --before={3.weeks.ago} --after={2010-04-18} --no-merges`
+			查看制定时间内的日志  `--no-merges` 选项以隐藏合并提交
+10、**版本回退**
+		`$ git reset --hard HEAD^`		回退到上一个版本
+			`HEAD`表示当前版本，`^`表示上个本版，`^^`代表上上版本
+		`$ git reset --hard [版本提交的id名]`		回退到指定版本，【未来的某个版本】
+		`$ git reflog`		查看命令历史，用来记录之前的每一次命令
+11、**撤销修改**
+		`$ git checkout -- [readme.txt]`	把文件在工作区的修改全部撤销 
+		`$ git reset HEAD [readme.txt]`		把暂存区的修改撤销重新放回工作区
+12、**删除文件**
+		`$ rm [readme.txt]`		删除文件readme.txt
+		`$ git rm [readme.txt]`		从版本库中删除文件，并且**使用下边命令提交**
+				`$ git commit -m "删除后必须提交"`	版本库中删除文件要`git commit`提交
+
+## 远程仓库
+
+1、**创建SSH Key**
+		`$ ssh-keygen -t rsa -C "youtemail@xxx.com"`  终端根目录下
+				`id_rsa`私钥
+				`id_rsa.pub`公钥
+2、**配置GitHub**
+		- 登陆GitHub，打开'Account settings'，'SSH Key'页面
+		- 点击进入'Add SSH Key'，Title任意填写，在Key里粘贴入`id_rsa.pub`文件内容
+3、**添加远程库**
+		- 登陆GitHub，右上角'Create a new repo'创建一个新库
+		- 在'Repository name'填入`learngit`库名，其他默认
+		- 在本地终端`learngit`仓库下运行命令
+		- `$ git remote add origin [gin@github.com:michaelliao/learngit.git]` 
+				[]里填写GitHub下新建库的协议设置
+		- `$ git push -u origin master`	把本地库的所有内容推送到远程库上
+		- `$ git push origin master`	推送最新修改
+4、**从远程库克隆**
+		- 登陆GitHub，新建一个库名为gitskills，勾选`initializze this repository with a README`
+		- `$ git clone [git@github.com:michaelliao/gitskills.git-协议]` 克隆一个本地库
+
+## 分支管理
+
+1、**创建分支**
+	`$ git branch [name名]`
+2、**切换分支**
+	`$ git checkout [name名]`===`$ git switch [name名]`
+	`$ git checkout -b [name名]`===`$ git switch -c [name名]`		创建并切换到新分支
+3、**分支合并**
+	`$ git merge[name名]`
+4、**查看分支**
+	`$ git branch`
+5、**删除分支**
+	`$ git branch -d [name名]`
+	`$ git branch -D [name名]`强制删除
+6、**查看分支合并结构/情况**
+	`$ git log --graph --pretty=oneline --abbrev-commit`
+7、**未完成工作存储与恢复**
+	`$ git stash`暂时存储未完成的工作(保护工作现场)
+	`$ git stash list`查看以存储的还未完成的工作现场
+	`$ git stash pop`恢复之前存储的未完成工作现场并同时删除`stash`存储内容
+	`$ git stash apply`------`$ git stash drop`
+		恢复之前存储的未完成工作现场，并删除`stash`存储内容
+	`$ git stash apply stash@{0}`恢复指定的未完成工作现场
+	`$ git cherry-pick [4c805e2]`把一个特定的提交“复制”到当前分支，避免重复劳动
+8、**多人协作常用**
+	`$ git pull [<options>] [<repository> [<refspec>]]`
+		从一个仓库或者本地的分支抓取并且整合代码
+		<repository>是仓库的名字，<refspec> 是分支的名字，如果都不写，会有一个默认值
+	`$ git branch --set-upstream [branch-name] origin/[branch-name]`
+		建立本地分支和远程分支的关联
+	`$ git checkout -b [branch-name] origin/[branch-name]`
+		在本地创建和远程分支对应的分支，本地和远程分支的名称最好一致
+	`$ git rebase`把分叉的提交历史“整理”成一条直线
+
+**多人协作的工作模式通常是这样：**
+
+1. 首先，可以试图用`git push origin <branch-name>`推送自己的修改；
+2. 如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
+3. 如果合并有冲突，则解决冲突，并在本地提交；
+4. 没有冲突或者解决掉冲突后，再用`git push origin <branch-name>`推送就能成功！
+   如果`git pull`提示no tracking information，则说明本地分支和远程分支的链接关系没有创建，用命令`git branch --set-upstream-to <branch-name> origin/<branch-name>`。
+
+**解决冲突**
+1，查看冲突文件内容 `$cat [filename]`
+2，`$ vim [冲突文件]`进入冲突文件修改文件
+3，`$ git add ........$ git commit...`提交修改后的冲突文件
+4，查看分支合并情况`$ git log --graph --pretty=oneline --abbrev-commit`
+5，git push到远程库，并且可以删掉多余分支。
+
+
+## 标签管理
+
+1）创建标签
+		- `$ git tag [name]`
+		- `$ git tag [v0.9] [f52c633]`	给指定提交打上标签
+		- `$ git tag`	查看所有标签
+2）查看标签信息
+		- `$ git show <tagname>`
+3）创建带有说明的标签
+		- `$ git tag -a [v0.1] -m "[version 0.1 released]" [1094adb]`
+			用`-a`指定标签名，`-m`指定说明文字
+4）删除标签
+		- `$ git tag -d [v0.1]`
+5）推送标签到远程
+		- `$ git push origin v1.0`
+6）推送全部未推送到远程的标签
+		- `$ git push origin --tags`
+7）删除以推送远程的标签
+		- `$ git push origin :refs/tags/[v0.9]`
